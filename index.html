@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>예능 운세 뽑기</title>
+
+<style>
+/* KirangHaerang 폰트 불러오기 */
+@font-face {
+  font-family: "KirangHaerang";
+  src: url("KirangHaerang-Regular.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+:root {
+  --yellow: #ffb339;
+  --yellow-dark: #d4c400;
+  --black: #000000;
+  --white: #ffffff;
+  --gray: #e6e6e6;
+
+  /* 화면 배경을 노랑빛 → 흰색 부드러운 그라데이션 */
+  --bg-top: #fbe227;
+  --bg-bottom: #36f530;
+
+  /* 카드 배경 */
+  --card-bg: rgba(255, 255, 255, 0.85);
+
+  /* 텍스트 */
+  --text-main: #000000;
+  --text-sub: #555555;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  
+    /* 🔥 배경 이미지 더 크게 확대 (120%) */
+    background: url("./images/back.png") center center / 120% no-repeat fixed;
+  
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+
+/* 앱 박스 */
+.app {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card-bg);
+  border-radius: 24px;
+  padding: 24px 20px 20px;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+  backdrop-filter: blur(8px);
+}
+
+/* 헤더 */
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 4px;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--black);
+
+  /* ⬅ 제목에만 기랑해랑 폰트 적용 */
+  font-family: "KirangHaerang", sans-serif;
+}
+
+.title span {
+  color: var(--yellow);
+  text-shadow: 0 0 12px rgba(229, 240, 255, 0.8);
+}
+
+.subtitle {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-sub);
+}
+
+/* 결과 카드 */
+.result-card {
+  margin-top: 20px;
+  border-radius: 16px;
+  padding: 14px;
+  background: var(--white);
+  border: 2px solid var(--black);
+  box-shadow: 0 4px 0 var(--black);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 카드 깜빡임 */
+.result-card.flash {
+  animation: flashCard 0.25s ease-out;
+}
+
+@keyframes flashCard {
+  0% { transform: scale(0.98); filter: brightness(1.2); }
+  100% { transform: scale(1); filter: brightness(1); }
+}
+
+/* 이미지 영역 (정사각형 1:1) */
+.result-media {
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 2px solid var(--black);
+    background: url("./images/back.png") center/80% no-repeat, var(--gray);
+  }
+
+.result-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 텍스트 */
+.result-main {
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  color: var(--black);
+}
+
+/* 무도 자막 감성 강조 박스 */
+.result-main.caption-style {
+  display: inline-block;
+  font-size: 18px;
+  padding: 7px 16px;
+  border-radius: 6px;
+  background: var(--yellow);
+  color: var(--black);
+  font-weight: 900;
+  border: 2px solid var(--black);
+  margin-top: 14px;
+  box-shadow: 0 3px 0 var(--black);
+}
+
+/* 버튼 */
+.actions {
+  margin-top: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-main {
+  border: 2px solid var(--black);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: var(--black);
+  background: var(--yellow);
+  box-shadow: 0 4px 0 var(--black);
+  transition: 0.12s;
+}
+
+.btn-main:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--black);
+}
+
+.btn-main:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 0 var(--black);
+}
+
+.hint {
+  font-size: 11px;
+  color: #333;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding: 20px 16px;
+  }
+  .title {
+    font-size: 22px;
+  }
+  .btn-main {
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+
+<body>
+  <div class="app">
+
+    <header class="header">
+      <h1 class="title">
+        오늘 <span>운세</span> 뽑기 🍀
+      </h1>
+      <p class="subtitle">
+        버튼 한 번 누르면, 예능 짤 운세가 나옵니다 🎬
+      </p>
+    </header>
+
+    <!-- 결과 카드 -->
+    <section class="result-card" aria-live="polite">
+      <div class="result-media">
+        <img id="fortune-image" src="images/placeholder.jpg" alt="" />
+      </div>
+
+      <div class="result-main"></div>
+    </section>
+
+    <div class="actions">
+      <button class="btn-main" id="draw-btn" type="button">
+        <span class="icon">🎬</span>
+        <span>운세 뽑기 시작!</span>
+      </button>
+      <p class="hint">※ 버튼을 누를 때마다 새로운 운세가 나옵니다</p>
+    </div>
+  </div>
+
+  <script>
+    // 메인 텍스트 + 이미지만 남긴 간단 버전
+    const fortunes = [
+      { main: "파이팅 합시다", image: "images/1.png" },
+      { main: "여유 있게 웃음 잃지 말고", image: "images/2.png" },
+      { main: "웃어서 행복한 것입니다", image: "images/3.png" },
+
+      { main: "버티면 승리다", image: "images/4.png" },
+      { main: "난 할 수 있다고 생각을 했었지", image: "images/5.png" },
+      { main: "저 물러서지 않습니다", image: "images/6.png" },
+
+      { main: "내 심장이 시키는대로", image: "images/7.png" },
+      { main: "Very Good!", image: "images/8.png" },
+      { main: "실수하는 모든 것들을 사랑해야지", image: "images/9.png" },
+
+      { main: "정신차려 이 각박한 세상 속에서", image: "images/10.png" },
+      { main: "나는 행복합니다", image: "images/11.jpg" },
+
+      { main: "저는 꼭 할 거예요", image: "images/12.png" },
+      { main: "늦었다고 생각할 땐 너무 늦은 거다 그러니 지금 당장 시작해라", image: "images/13.png" },
+      { main: "기필코 내가 버틴다", image: "images/14.png" },
+
+      { main: "반드시 해낸다", image: "images/15.png" },
+      { main: "대성공이 되", image: "images/16.png" },
+      { main: "눈부신 미래...", image: "images/17.png" },
+
+      { main: "돼 돼 분명히 돼", image: "images/18.png" },
+      { main: "이제는 속력을 내야할 때!", image: "images/19.png" },
+      { main: "다들 너무 예민해지지 맙시다", image: "images/20.png" }
+    ];
+
+    const drawBtn = document.getElementById("draw-btn");
+    const mainEl = document.querySelector(".result-main");
+    const cardEl = document.querySelector(".result-card");
+    const imageEl = document.getElementById("fortune-image");
+
+    // 랜덤 뽑기
+    function pickRandomFortune() {
+      return fortunes[Math.floor(Math.random() * fortunes.length)];
+    }
+
+    // 렌더링
+    function renderFortune(f) {
+      mainEl.textContent = f.main;
+      imageEl.src = f.image;
+
+      mainEl.classList.add("caption-style");
+
+      cardEl.classList.remove("flash");
+      void cardEl.offsetWidth;
+      cardEl.classList.add("flash");
+    }
+
+    drawBtn.addEventListener("click", () => {
+      renderFortune(pickRandomFortune());
+    });
+  </script>
+</body>
+</html>
