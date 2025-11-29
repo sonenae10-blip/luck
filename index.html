@@ -195,10 +195,18 @@ body {
   .btn-main {
     font-size: 14px;
   }
+}
+
+@media (max-width: 768px) {
   body {
-    background: url("./back.png") center center / 120% no-repeat fixed;
+    background-image: url("back.png");   /* 경로에서 ./ 제거 */
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: scroll !important;
   }
 }
+
 </style>
 </head>
 
